@@ -1,0 +1,59 @@
+name: Tâche ou fonctionnalité
+description: Un travail à réaliser (une issue = un responsable)
+labels: ["enhancement"]
+projects: ["BlaBlaNoSQL/1"]
+body:
+  - type: dropdown
+    id: domaine
+    attributes:
+      label: Domaine
+      options:
+        - back
+        - front
+        - bdd
+        - securite
+        - doc
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: Rôle responsable
+      options:
+        - Chef de projet
+        - Architecte NoSQL
+        - Responsable base principale (Cassandra)
+        - Responsable base secondaire
+        - Développeur API 1
+        - Développeur API 2
+        - Responsable sécurité JWT
+        - Développeur React 1
+        - Développeur React 2
+        - Responsable qualité et documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Ce qu'il faut faire et pourquoi.
+    validations:
+      required: true
+
+  - type: textarea
+    id: criteres
+    attributes:
+      label: Critères d'acceptation
+      description: Ce qui doit être vrai pour fermer l'issue.
+      value: "- [ ] "
+    validations:
+      required: true
+
+  - type: input
+    id: dependances
+    attributes:
+      label: Dépend de
+      description: Numéros des issues à terminer avant celle-ci.
+      placeholder: "#5, #9"
