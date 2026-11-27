@@ -1,3 +1,5 @@
+![BlaBlaNoSQL — covoiturage temps réel, architecture NoSQL distribuée](docs/assets/banner.svg)
+
 # BlaBlaNoSQL
 
 Plateforme de covoiturage temps réel de type BlaBlaCar, réalisée dans le cadre du projet NoSQL du BUT3 (groupe de 10 étudiants, 16 h de conception et de développement).
