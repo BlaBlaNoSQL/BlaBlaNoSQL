@@ -12,7 +12,13 @@ Nommage : `feature/<domaine>-<sujet>`, par exemple `feature/api-reservations`, `
 
 ## Commits
 
-Format : `type(portée): résumé à l'impératif, sans point final`
+Les messages de commit sont rédigés **en anglais** et suivent les conventions Git.
+
+Format : `type(portée): summary`
+
+- Résumé à l'impératif (`add`, et non `added` ou `adds`), sans point final.
+- Première ligne courte : 50 caractères conseillés, 72 au maximum.
+- Si des explications sont utiles : une ligne vide, puis le détail (ce qui change et pourquoi).
 
 | Type | Usage |
 |---|---|
@@ -23,17 +29,18 @@ Format : `type(portée): résumé à l'impératif, sans point final`
 | test | Ajout ou modification de tests |
 | chore | Outillage, configuration, dépendances |
 
-Exemples : `feat(api): ajoute la réservation d'une place`, `docs(bdd): décrit la table positions_by_trip`.
+Exemples : `feat(api): add seat booking`, `docs(bdd): describe positions_by_trip table`.
 Commits fréquents, petits, un sujet par commit.
 
 ## Pull requests
 
 - Obligatoires : aucune fusion dans `develop` ou `main` sans PR.
+- Titre et description rédigés **en français**. Titre au format `type(portée): résumé`, sans point final, par exemple `feat(api): ajoute la réservation d'une place`.
 - Au moins deux relectures approuvées par deux autres membres (dont un relecteur de l'autre pôle si possible).
 - Description courte de ce qui change et comment le tester. Le [modèle de PR](../.github/pull_request_template.md) donne la trame.
 - Si la PR traite une issue, la citer (`Closes #n`, ou `Refs #n` si le travail n'est pas terminé). Une PR sans issue est acceptée.
 - Pas de conflit, application qui démarre, avant la fusion.
-- Fusion par le Chef de projet ou l'auteur après approbation.
+- Fusion par le Chef de projet ou l'auteur après approbation, avec *Create a merge commit* (un squash mettrait le titre français dans l'historique des commits).
 - `main` : mise à jour uniquement aux jalons (backend opérationnel, front connecté, release candidate, livraison).
 
 ## Intégration continue
@@ -43,7 +50,7 @@ GitHub Actions vérifie chaque PR, ainsi que chaque push sur `main` et `develop`
 | Check | Vérifie |
 |---|---|
 | `CI OK` | Résumé de la CI : aucun `.env` ni `node_modules` versionné, `backend/` et `frontend/` (seulement s'ils sont modifiés), syntaxe des workflows |
-| `Règles PR` | Titre au format des commits ; une PR vers `main` vient de `develop` |
+| `Règles PR` | Titre au format `type(portée): résumé` (la langue n'est pas vérifiée) ; une PR vers `main` vient de `develop` |
 
 Un `backend/` ou `frontend/` est testé dès qu'il contient un `package.json`. Il doit alors respecter ces règles :
 
