@@ -9,11 +9,14 @@ flowchart LR
     MW --> SVC[Services métier]
     SVC -->|écritures / lectures<br/>consistency LOCAL_QUORUM| C1[(Cassandra<br/>DC principal)]
     C1 -. réplication asynchrone .-> C2[(Cassandra / réplica<br/>DC secondaire)]
-    SVC -->|cache, temps réel,<br/>ou relations| S[(Seconde base<br/>à définir)]
+    SVC -->|position courante, cache,<br/>événements| R[(Redis)]
+    R -->|Stream d'événements| W[Consommateur<br/>trip-indexer]
+    W -->|copie des trajets| M[(MongoDB<br/>recherche, statistiques)]
+    SVC -->|recherche multicritère| M
     SIM[Simulateur GPS<br/>scripts/] -->|positions| API
 ```
 
-Principe : Cassandra porte les données volumineuses et les écritures continues ; la seconde base couvre le besoin que Cassandra traite mal (voir [bdd-secondaire.md](bdd-secondaire.md)).
+Principe : Cassandra porte toutes les données métier et en est la seule référence ; Redis porte le temps réel et le cache, MongoDB une copie des trajets pour la recherche et les statistiques (voir [analyse-bdd.md](analyse-bdd.md) et [bdd-secondaire.md](bdd-secondaire.md)).
 
 ## Répartition des données
 
@@ -21,7 +24,8 @@ Principe : Cassandra porte les données volumineuses et les écritures continues
 |---|---|---|
 | Utilisateurs, trajets, réservations, avis | Cassandra | Écritures nombreuses, lecture par clé de partition |
 | Positions GPS (historique) | Cassandra | Séries temporelles, forte volumétrie |
-| Position courante, relations, profils (selon choix) | Seconde base | À arbitrer |
+| Position courante, véhicules en circulation, cache, tentatives de connexion, jetons révoqués, événements | Redis | Mémoire, TTL, Pub/Sub, `GEO` |
+| Copie des trajets pour la recherche, statistiques | MongoDB | Index composés, `2dsphere`, agrégations |
 
 ## Justification CAP et partitionnement
 
@@ -29,7 +33,7 @@ Principe : Cassandra porte les données volumineuses et les écritures continues
 - Réservations : lecture et écriture en `LOCAL_QUORUM` pour limiter le risque de surréservation (à compléter, éventuellement avec LWT `IF`).
 - Positions GPS : écriture en `ONE`, une position perdue est sans gravité.
 - Partitionnement par hachage de la clé de partition : répartition uniforme des données entre les nœuds, pas de point central.
-- Choix de la seconde base : position CAP à justifier dans [bdd-secondaire.md](bdd-secondaire.md).
+- Redis est AP, MongoDB CP : positions CAP détaillées dans [bdd-secondaire.md](bdd-secondaire.md).
 
 ## Réplication et geo-partitioning
 
@@ -42,4 +46,4 @@ Principe : Cassandra porte les données volumineuses et les écritures continues
 
 1. Connexion : l'API vérifie le mot de passe, émet un JWT avec le rôle.
 2. Publication / recherche de trajet : écriture dans les tables de trajets, lecture par (départ, date).
-3. Suivi : le simulateur envoie des positions, l'API les écrit (historique Cassandra, position courante selon la seconde base), le front les lit.
+3. Suivi : le simulateur envoie des positions, l'API les écrit (historique dans Cassandra, position courante dans Redis) et les diffuse au front.

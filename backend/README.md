@@ -1,6 +1,6 @@
 # Backend
 
-API REST Node.js / Express.js. Elle expose les fonctionnalités de la plateforme au front React, applique l'authentification JWT et les rôles, et dialogue avec Cassandra et la seconde base.
+API REST Node.js / Express.js. Elle expose les fonctionnalités de la plateforme au front React, applique l'authentification JWT et les rôles, et dialogue avec Cassandra, Redis et MongoDB.
 
 Aucun code applicatif pour l'instant : ce dossier ne contient que ce README.
 
@@ -9,7 +9,7 @@ Aucun code applicatif pour l'instant : ce dossier ne contient que ce README.
 ```
 backend/
 ├── app.js            Point d'entrée Express
-├── config/           Variables d'environnement, connexions Cassandra et seconde base
+├── config/           Variables d'environnement, connexions Cassandra, Redis et MongoDB
 ├── routes/           Déclaration des endpoints (auth, trips, bookings, search, reviews, positions)
 ├── controllers/      Lecture de la requête, appel des services, réponse HTTP
 ├── services/         Logique métier et accès aux bases

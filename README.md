@@ -14,7 +14,7 @@ L'enjeu : gérer des données très dynamiques (positions GPS, trajets, réserva
 | API | Node.js / Express.js (API REST) |
 | Sécurité | JWT avec rôles |
 | Base principale (imposée) | Apache Cassandra |
-| Seconde base NoSQL | À définir et à justifier (pistes : Redis, MongoDB, Neo4j), voir [docs/bdd-secondaire.md](docs/bdd-secondaire.md) |
+| Bases secondaires | Redis (temps réel, cache, événements) et MongoDB (recherche, statistiques), voir [docs/bdd-secondaire.md](docs/bdd-secondaire.md) |
 | Versioning | Git / GitHub |
 
 ## Fonctionnalités minimales
@@ -65,7 +65,7 @@ git clone <URL_DU_DEPOT> && cd BlaBlaNoSQL
 # 2. Configurer l'environnement
 cp .env.example .env        # puis renseigner les valeurs
 
-# 3. Lancer les bases (Cassandra + seconde base)
+# 3. Lancer les bases (Cassandra, Redis, MongoDB)
 <COMMANDE_LANCEMENT_BASES>
 
 # 4. Initialiser le schéma et charger la démo
@@ -83,7 +83,8 @@ cd frontend && <COMMANDE_INSTALL> && <COMMANDE_START>
 - [Architecture](docs/architecture.md)
 - [API REST](docs/api-rest.md)
 - [Base Cassandra](docs/bdd-cassandra.md)
-- [Seconde base : justification](docs/bdd-secondaire.md)
+- [Analyse des bases de données](docs/analyse-bdd.md)
+- [Bases secondaires : justification](docs/bdd-secondaire.md)
 - [JWT et sécurité](docs/jwt-securite.md)
 - [Organisation Git](docs/organisation-git.md)
 - [Issues à créer](docs/issues-a-creer.md)
