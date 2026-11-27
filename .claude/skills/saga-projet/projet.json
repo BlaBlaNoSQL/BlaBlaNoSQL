@@ -1,0 +1,24 @@
+{
+  "projet": "BlaBlaNoSQL",
+  "tableau": {
+    "distant": "https://github.com/BlaBlaNoSQL/saga-tableau.git"
+  },
+  "code": {
+    "distant": "origin"
+  },
+  "regles": {
+    "mode": "pr",
+    "qui_fusionne": "humain",
+    "branche_cible": "develop",
+    "commande_tests": "npm test",
+    "modele_branche": "<type>/<domaine>-<sujet>",
+    "domaines": "api,front,bdd,jwt,doc,qualite,infra",
+    "taches_actives": "non",
+    "taches_reference": "https://github.com/orgs/BlaBlaNoSQL/projects/1",
+    "journal.obligatoire": "non",
+    "journal.intervalle_min": "15",
+    "journal.jours": "60",
+    "zones_protegees": ".github/**,**/package-lock.json,CLAUDE.md,AGENTS.md,.claude/settings.json,.claude/skills/**",
+    "gardiens": "malikchopa,mgorce4"
+  }
+}

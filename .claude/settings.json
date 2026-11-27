@@ -1,0 +1,58 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node .claude/skills/saga-projet/scripts/saga.mjs *)",
+      "PowerShell(node .claude/skills/saga-projet/scripts/saga.mjs *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/skills/saga-projet/scripts/saga.mjs",
+              "hook"
+            ],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/skills/saga-projet/scripts/saga.mjs",
+              "hook",
+              "stop"
+            ],
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/skills/saga-projet/scripts/saga.mjs",
+              "hook",
+              "session"
+            ],
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
