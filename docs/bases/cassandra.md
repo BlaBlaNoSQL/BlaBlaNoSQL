@@ -43,6 +43,6 @@ CREATE KEYSPACE blablanosql WITH replication =
 
 - Positions : la partition `(trip_id, day)` borne la taille des partitions ; TTL éventuel pour limiter l'historique.
 - Places restantes : `seats_left` mis à jour avec une transaction légère (`IF seats_left > 0`) ou compteur séparé. Décision à prendre.
-- Recherche multicritère (prix, note) : filtrage côté API sur la partition (route, jour), ou seconde base. À arbitrer avec [bdd-secondaire.md](bdd-secondaire.md).
+- Recherche multicritère (prix, note) : filtrage côté API sur la partition (route, jour), ou seconde base. À arbitrer avec [seconde-base.md](seconde-base.md).
 - Cohérence : `LOCAL_QUORUM` pour réservations et utilisateurs, `ONE` pour positions.
 - Volumétrie cible et jeu de données : à renseigner (source open data / génération), script d'import dans `scripts/`, seed dans `database/`.

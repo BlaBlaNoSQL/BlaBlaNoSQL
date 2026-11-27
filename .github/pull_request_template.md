@@ -27,4 +27,4 @@ Closes #
 - [ ] L'application démarre et la branche n'a pas de conflit
 - [ ] Aucun secret ni fichier `.env` ajouté
 - [ ] Documentation à jour si nécessaire (API, schéma des bases, `.env.example`)
-- [ ] Relecture demandée à deux autres membres, dont un de l'autre pôle si possible
+- [ ] Relecture demandée au responsable de mon pôle et à une personne du pôle Qualité

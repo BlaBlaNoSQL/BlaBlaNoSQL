@@ -14,7 +14,7 @@ L'enjeu : gérer des données très dynamiques (positions GPS, trajets, réserva
 | API | Node.js / Express.js (API REST) |
 | Sécurité | JWT avec rôles |
 | Base principale (imposée) | Apache Cassandra |
-| Seconde base NoSQL | À définir et à justifier (pistes : Redis, MongoDB, Neo4j), voir [docs/bdd-secondaire.md](docs/bdd-secondaire.md) |
+| Seconde base NoSQL | À définir et à justifier (pistes : Redis, MongoDB, Neo4j), voir [docs/bases/seconde-base.md](docs/bases/seconde-base.md) |
 | Versioning | Git / GitHub |
 
 ## Fonctionnalités minimales
@@ -80,13 +80,16 @@ cd frontend && <COMMANDE_INSTALL> && <COMMANDE_START>
 
 ## Documentation
 
-- [Architecture](docs/architecture.md)
-- [API REST](docs/api-rest.md)
-- [Base Cassandra](docs/bdd-cassandra.md)
-- [Seconde base : justification](docs/bdd-secondaire.md)
-- [JWT et sécurité](docs/jwt-securite.md)
-- [Organisation Git](docs/organisation-git.md)
-- [Issues à créer](docs/issues-a-creer.md)
+- [Règles communes (équipe et agents IA)](AGENTS.md) · [Contribuer](CONTRIBUTING.md) · [Definition of Done](DEFINITION_OF_DONE.md)
+- [Sommaire de la documentation](docs/README.md) · [Journal des décisions](docs/decisions.md)
+- [Architecture](docs/architecture/architecture.md)
+- [API REST](docs/api/api-rest.md)
+- [Base Cassandra](docs/bases/cassandra.md)
+- [Seconde base : justification](docs/bases/seconde-base.md)
+- [JWT et sécurité](docs/securite/jwt.md)
+- [Accessibilité du front](docs/front/accessibilite.md)
+- [Organisation Git](docs/equipe/organisation-git.md)
+- [Issues à créer](docs/equipe/issues-a-creer.md)
 - [README backend](backend/README.md) · [README frontend](frontend/README.md)
 
 ## Livrables attendus

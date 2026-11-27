@@ -20,6 +20,10 @@ yarn-error.log*
 # Tests / couverture
 coverage/
 
+# Réglages personnels des agents IA (les fichiers partagés, eux, sont versionnés)
+CLAUDE.local.md
+.claude/settings.local.json
+
 # Système et éditeurs
 .DS_Store
 .idea/
