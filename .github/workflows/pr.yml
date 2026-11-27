@@ -1,0 +1,45 @@
+name: PR
+
+# Séparé de ci.yml : corriger le titre d'une PR ne relance pas les tests.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches: [main, develop, dev]
+
+permissions: {}
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  rules:
+    name: Règles PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Vérifier le titre et la branche source
+        shell: bash
+        # Titre et nom de branche sont saisis par l'auteur : toujours passer
+        # par des variables d'environnement, jamais directement dans le script.
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+          HEAD: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          status=0
+
+          pattern='^(feat|fix|docs|refactor|test|chore)\([^()]+\): [^ ](.*[^. ])?$'
+          if [[ ! $TITLE =~ $pattern ]]; then
+            echo "::error::Titre attendu : type(portée): résumé, sans point final. Types : feat, fix, docs, refactor, test, chore. Exemple : feat(api): ajoute la réservation d'une place"
+            status=1
+          fi
+
+          if [[ $BASE == main ]] && ! [[ $HEAD_REPO == "$REPO" && ($HEAD == develop || $HEAD == dev) ]]; then
+            echo "::error::main ne reçoit que des PR venant de la branche d'intégration. Changer la branche cible de la PR."
+            status=1
+          fi
+
+          exit "$status"
