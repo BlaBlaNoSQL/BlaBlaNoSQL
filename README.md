@@ -78,6 +78,7 @@ cd frontend && <COMMANDE_INSTALL> && <COMMANDE_START>
 
 ## Documentation
 
+- [Règles du projet (équipe et agents IA)](AGENTS.md) · [Definition of Done](DEFINITION_OF_DONE.md) · [Contribuer](CONTRIBUTING.md)
 - [Architecture](docs/architecture.md)
 - [API REST](docs/api-rest.md)
 - [Base Cassandra](docs/bdd-cassandra.md)
