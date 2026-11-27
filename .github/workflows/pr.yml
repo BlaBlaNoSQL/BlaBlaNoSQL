@@ -18,14 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-      - name: Vérifier le titre, la branche source et l'issue liée
+      - name: Vérifier le titre et la branche source
         shell: bash
-        # Titre, description et nom de branche sont saisis par l'auteur : toujours
-        # passer par des variables d'environnement, jamais directement dans le script.
+        # Titre et nom de branche sont saisis par l'auteur : toujours passer
+        # par des variables d'environnement, jamais directement dans le script.
         env:
           TITLE: ${{ github.event.pull_request.title }}
-          BODY: ${{ github.event.pull_request.body }}
-          AUTHOR: ${{ github.event.pull_request.user.login }}
           BASE: ${{ github.event.pull_request.base.ref }}
           HEAD: ${{ github.event.pull_request.head.ref }}
           HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
@@ -41,14 +39,6 @@ jobs:
 
           if [[ $BASE == main ]] && ! [[ $HEAD_REPO == "$REPO" && ($HEAD == develop || $HEAD == dev) ]]; then
             echo "::error::main ne reçoit que des PR venant de la branche d'intégration. Changer la branche cible de la PR."
-            status=1
-          fi
-
-          # Les commentaires du modèle de PR ne comptent pas.
-          visible=$(perl -0pe 's/<!--.*?-->//gs' <<<"$BODY")
-          link='\b(close[sd]?|fix(es|ed)?|resolve[sd]?|refs?):? +#[0-9]+'
-          if [[ $BASE != main && $AUTHOR != "dependabot[bot]" ]] && ! grep -qiE "$link" <<<"$visible"; then
-            echo "::error::Aucune issue liée. Ajouter « Closes #n » (ou « Refs #n ») dans la description de la PR."
             status=1
           fi
 

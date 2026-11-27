@@ -5,11 +5,11 @@ Exemple : feat(api): ajoute la réservation d'une place
 Branche cible : develop. main ne reçoit que les PR de jalon.
 -->
 
-## Issue liée
+## Issue liée (facultatif)
 
 <!--
-Ajouter le numéro après le #. « Closes » ferme l'issue à la fusion,
-« Refs » la cite sans la fermer. Non demandé pour une PR de jalon vers main.
+Si la PR traite une issue, ajouter son numéro après le #. « Closes » ferme
+l'issue à la fusion, « Refs » la cite sans la fermer. Sinon, supprimer cette section.
 -->
 
 Closes #

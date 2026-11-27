@@ -30,7 +30,8 @@ Commits fréquents, petits, un sujet par commit.
 
 - Obligatoires : aucune fusion dans `develop` ou `main` sans PR.
 - Au moins une relecture approuvée par un autre membre (relecteur de l'autre pôle si possible).
-- PR liée à une issue (`Closes #n`, ou `Refs #n` si le travail n'est pas terminé), description courte de ce qui change et comment le tester. Le [modèle de PR](../.github/pull_request_template.md) donne la trame.
+- Description courte de ce qui change et comment le tester. Le [modèle de PR](../.github/pull_request_template.md) donne la trame.
+- Si la PR traite une issue, la citer (`Closes #n`, ou `Refs #n` si le travail n'est pas terminé). Une PR sans issue est acceptée.
 - Pas de conflit, application qui démarre, avant la fusion.
 - Fusion par le Chef de projet ou l'auteur après approbation.
 - `main` : mise à jour uniquement aux jalons (backend opérationnel, front connecté, release candidate, livraison).
@@ -42,7 +43,7 @@ GitHub Actions vérifie chaque PR, ainsi que chaque push sur `main` et `develop`
 | Check | Vérifie |
 |---|---|
 | `CI OK` | Résumé de la CI : aucun `.env` ni `node_modules` versionné, `backend/` et `frontend/` (seulement s'ils sont modifiés), syntaxe des workflows |
-| `Règles PR` | Titre au format des commits ; une PR vers `main` vient de `develop` ; les autres PR citent une issue (sauf Dependabot) |
+| `Règles PR` | Titre au format des commits ; une PR vers `main` vient de `develop` |
 
 Un `backend/` ou `frontend/` est testé dès qu'il contient un `package.json`. Il doit alors respecter ces règles :
 
@@ -55,7 +56,7 @@ Avant de pousser, dans le dossier modifié : `npm ci && npm run lint && npm test
 
 ## Issues et tableau du projet
 
-Le suivi se fait dans le [tableau du projet](https://github.com/orgs/BlaBlaNoSQL/projects/1).
+Le suivi se fait dans le [tableau du projet](https://github.com/orgs/BlaBlaNoSQL/projects/1). Quand un travail mérite d'être suivi :
 
 1. Créer l'issue avec un des modèles (*Tâche ou fonctionnalité*, *Bug*). Elle est ajoutée au tableau si son auteur a le droit d'écriture sur le projet.
 2. S'assigner l'issue et la passer en cours sur le tableau.
