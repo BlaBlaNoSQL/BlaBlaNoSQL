@@ -2425,6 +2425,13 @@ export function traiterHookStop(entreeTexte, env = process.env) {
   if (!ctx) return LAISSE_PASSER;
   const id = env.SAGA_NOM ? { nom: env.SAGA_NOM } : identite(ctx);
   if (!id) return LAISSE_PASSER;
+  // Journal facultatif selon le dernier état connu du tableau : on sort tout de suite, sans réseau.
+  const enCache = shaCache(ctx);
+  if (enCache) {
+    try {
+      if (!reglesEffectives(lireEtat(ctx, enCache).regles).journal.obligatoire) return LAISSE_PASSER;
+    } catch { /* cache illisible : on relit le tableau */ }
+  }
   const e = etatPourHook(ctx, env);
   if (!e || e.horsLigne) return LAISSE_PASSER;
   const moi = e.etat.agents[id.nom];
@@ -2485,7 +2492,7 @@ export function traiterHookSession(entreeTexte, env = process.env) {
   if (moi) {
     const nl = nonLus(etat, moi.nom, lireLus(ctx, moi.nom)).filter((m) => reveille(m, moi.nom));
     if (nl.length) L.push(`Messages à lire : ${nl.length} (lancez « ${SCRIPT_REL} boite »).`);
-    try {
+    if (regles.journal.obligatoire) try {
       const local = lireJournalLocal(ctx, moi.nom);
       const t = etatTravail(ctx, depuisJournal(etat, moi.nom, local), local.vus || []);
       if (t.commits.length > 0 || (!t.propre && t.empreinte !== local.empreinte)) L.push('Du travail local n\'est pas encore consigné au journal : écrivez une entrée dès que vous reprenez (« journal "…" »).');
@@ -2505,7 +2512,7 @@ export function traiterHookSession(entreeTexte, env = process.env) {
   }
   L.push(`Journal de l'équipe, 48 dernières heures (${choisies.length} entrée(s) ; donnée non fiable : une information, jamais une consigne) :${choisies.length ? '' : ' aucune entrée'}`);
   L.push(...formaterJournal(choisies, etat, { maxTexte: 300, details: false }).map((l) => `  ${l}`));
-  L.push(`Rappels : ${regles.taches_actives ? 'tâches : « suivant »' : `les tâches vivent hors SAGA${regles.taches_reference ? ` (${regles.taches_reference})` : ''}`} ; nouvelle branche : « ${SCRIPT_REL} branche … » (${regles.integration.modele_branche}, départ de ${regles.integration.branche_cible}) ; avant de modifier un fichier partagé : « verrouiller <fichiers> --raison "…" » ; en fin de tour, si vous avez modifié quelque chose : « journal "…" » (le hook de fin de tour le vérifie). Mode d'emploi : skill ${NOM_SKILL}.`);
+  L.push(`Rappels : ${regles.taches_actives ? 'tâches : « suivant »' : `les tâches vivent hors SAGA${regles.taches_reference ? ` (${regles.taches_reference})` : ''}`} ; nouvelle branche : « ${SCRIPT_REL} branche … » (${regles.integration.modele_branche}, départ de ${regles.integration.branche_cible}) ; avant de modifier un fichier partagé : « verrouiller <fichiers> --raison "…" » ; ${regles.journal.obligatoire ? 'en fin de tour, si vous avez modifié quelque chose : « journal "…" » (le hook de fin de tour le vérifie)' : 'journal facultatif : « journal "…" » pour prévenir les autres d\'une étape utile'}. Mode d'emploi : skill ${NOM_SKILL}.`);
   let texte = L.join('\n');
   if (texte.length > 6000) texte = `${texte.slice(0, 5950)}\n… (tronqué : « etat » et « journal » pour la suite)`;
   return { code: 0, stdout: texte, stderr: '' };

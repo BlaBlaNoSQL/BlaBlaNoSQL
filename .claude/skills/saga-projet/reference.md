@@ -10,7 +10,7 @@ Invocation : `node .claude/skills/saga-projet/scripts/saga.mjs <commande> [optio
 - `projet.json` : préréglages du projet (règles de départ, distant du tableau). `init` les applique sans poser de question.
 - Branches : le nom vient de la règle `integration.modele_branche` (ici `<type>/<domaine>-<sujet>`), plus de `sg/<nom>/<id>` en dur. Nouvelle commande `branche`.
 - Tâches : désactivables (`taches_actives=non`, cas de ce projet). `taches`, `tache …` et `suivant` répondent alors 1.
-- Journal de travail : commande `journal`, hook de fin de tour (`Stop`), hook de début de session (`SessionStart`).
+- Journal de travail : commande `journal`, hook de début de session (`SessionStart`), hook de fin de tour (`Stop`) qui ne réclame une entrée que si `journal.obligatoire=oui` (facultatif dans ce projet : les comptes rendus obligatoires sont faits par un autre outil).
 - Moins d'écritures : `verrouiller` accepte plusieurs motifs, `journal --liberer-verrous`, `rejoindre` marque les règles lues.
 - Contention : 16 tentatives d'écriture au lieu de 8 (mesure : 15 agents écrivant au même instant, voir plus bas).
 - Le tableau peut vivre sur un autre dépôt que le code (`tableau.distant`).
@@ -91,10 +91,10 @@ Forme `"command": "node"` + `"args": ["${CLAUDE_PROJECT_DIR}/.claude/skills/saga
 | Événement | Appel | Ce qu'il fait |
 |---|---|---|
 | `PreToolUse` (`Edit\|Write\|MultiEdit\|NotebookEdit`) | `hook` | Bloque (sortie 2, raison sur stderr) si le fichier est couvert par le verrou actif d'un **autre** (que vous soyez inscrit ou non), s'il est en zone protégée sans verrou à vous marqué `accord`, ou si `verrou_obligatoire` est vrai et que vous n'avez pas de verrou couvrant. Autorise un verrou expiré ou à vous. |
-| `Stop` | `hook stop` | Fin de tour. Si du travail local n'est pas consigné, répond `{"decision":"block","reason":"…"}` (sortie 0) : Claude continue et écrit son entrée. |
+| `Stop` | `hook stop` | Fin de tour. **Dans ce projet (`journal.obligatoire=non`), laisse toujours passer**, sans réseau (règles lues dans le cache local). Si un gardien change la règle, chaque clone la voit à sa prochaine lecture du tableau (une modification de fichier par Claude, une commande `saga`, un début de session). Si un gardien passe la règle à `oui` : quand du travail local n'est pas consigné, répond `{"decision":"block","reason":"…"}` (sortie 0), Claude continue et écrit son entrée. |
 | `SessionStart` | `hook session` | Imprime sur stdout (ajouté au contexte de Claude) : votre identité ou l'invitation à s'inscrire, les agents actifs et leur branche, les fichiers réservés, les messages à lire, les deux dernières entrées de chaque agent sur 48 h (12 au plus). 6 000 caractères au plus. Lecture seule. |
 
-Le hook `Stop` considère qu'il y a du travail à consigner si, depuis votre dernière entrée (ou votre inscription) : un commit a été fait dans ce clone, ou l'état non commité a changé (empreinte de `git diff HEAD` et des fichiers non suivis). Un arbre propre sans nouveau commit ne réclame rien.
+Ce qui suit ne vaut que si `journal.obligatoire=oui`. Le hook `Stop` considère qu'il y a du travail à consigner si, depuis votre dernière entrée (ou votre inscription) : un commit a été fait dans ce clone, ou l'état non commité a changé (empreinte de `git diff HEAD` et des fichiers non suivis). Un arbre propre sans nouveau commit ne réclame rien.
 
 Il **laisse toujours passer** (sortie 0, aucune sortie) : hors d'un dépôt git, tableau absent, agent non inscrit ou parti, pas de réseau, règle `journal.obligatoire=non`, moins de `journal.intervalle_min` minutes depuis la dernière entrée, entrée JSON illisible, erreur interne.
 
@@ -112,7 +112,7 @@ Variables d'environnement (surtout pour les tests) : `SAGA_NOM` (identité, remp
 
 ## Écritures et charge (mesures du 27/11/2026, dépôt local, délai réseau simulé)
 
-Chaque écriture du tableau est un push sur la branche `saga`. Par agent : `rejoindre` 1 (une fois), `verrouiller` 1 par lot de fichiers, `journal` 1 par entrée (au plus 4 par heure exigées avec `journal.intervalle_min=15`), `envoyer` 1, `deverrouiller` 1 (0 avec `journal --liberer-verrous`). `etat`, `branche`, `journal` sans texte, `boite`, `verifier` et les trois hooks n'écrivent rien. Ordre de grandeur : 5 à 7 écritures par agent et par heure de travail.
+Chaque écriture du tableau est un push sur la branche `saga`. Par agent : `rejoindre` 1 (une fois), `verrouiller` 1 par lot de fichiers, `journal` 1 par entrée (facultatif ici ; au plus 4 par heure exigées si `journal.obligatoire=oui` et `journal.intervalle_min=15`), `envoyer` 1, `deverrouiller` 1 (0 avec `journal --liberer-verrous`). `etat`, `branche`, `journal` sans texte, `boite`, `verifier` et les trois hooks n'écrivent rien. Ordre de grandeur : 5 à 7 écritures par agent et par heure de travail.
 
 15 agents lançant `journal` au même instant, délai simulé de 1 à 1,5 s entre lecture et push : avec 8 tentatives, 2 à 4 agents sur 15 finissaient en contention (code 5) ; avec 16 tentatives, 0 sur 15 sur 8 salves, la dernière écriture aboutissant en 25 à 36 s. Écritures étalées (un départ toutes les 2 s) : 1 tentative chacune. 15 demandes simultanées du même verrou : un seul gagnant, 14 refus (code 1). Aucune entrée perdue.
 
@@ -145,7 +145,7 @@ Forme `section.cle=valeur` ou `cle=valeur` si la clé est unique ; listes sépar
 | `domaines` | liste (vide = tous) | aucun | `api,front,bdd,jwt,doc,qualite,infra` |
 | `taches_actives` | oui / non | oui | non |
 | `taches_reference` | texte (lien) | vide | lien du tableau GitHub du projet |
-| `journal.obligatoire` | oui / non | oui | oui |
+| `journal.obligatoire` | oui / non | oui | **non** (comptes rendus faits par un autre outil) |
 | `journal.intervalle_min` | entier >= 0 (0 = à chaque tour) | 0 | 15 |
 | `journal.jours` | entier >= 1 | 30 | 60 |
 | `autonomie.prendre_taches`, `repondre_agents`, `pousser_branche_travail`, `installer`, `supprimer` | `autorise`, `demander`, `interdit` | `autorise` pour les trois premières, `demander` pour les deux autres | idem |

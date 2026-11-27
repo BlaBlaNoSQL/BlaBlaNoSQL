@@ -15,7 +15,7 @@
     "domaines": "api,front,bdd,jwt,doc,qualite,infra",
     "taches_actives": "non",
     "taches_reference": "https://github.com/orgs/BlaBlaNoSQL/projects/1",
-    "journal.obligatoire": "oui",
+    "journal.obligatoire": "non",
     "journal.intervalle_min": "15",
     "journal.jours": "60",
     "zones_protegees": ".github/**,**/package-lock.json,CLAUDE.md,AGENTS.md,.claude/settings.json,.claude/skills/**",

@@ -10,7 +10,7 @@
 | Intégration | par PR vers `develop`, un humain fusionne |
 | Branches | `<type>/<domaine>-<sujet>` (`feature/…` ou `fix/…`) ; domaines : api, front, bdd, jwt, doc, qualite, infra |
 | Tâches | hors SAGA : tableau GitHub du projet |
-| Journal | obligatoire en fin de tour, au plus une entrée exigée par quart d'heure, gardé 60 jours |
+| Journal | facultatif (les comptes rendus obligatoires passent par un autre outil), gardé 60 jours |
 | Zones protégées | `.github/**`, `**/package-lock.json`, `CLAUDE.md`, `AGENTS.md`, `.claude/settings.json`, `.claude/skills/**` |
 | Gardiens (seuls à pouvoir changer les règles) | `malikchopa`, `mgorce4` |
 | Verrous | 2 h sans nouvelle de l'agent, puis libres |
