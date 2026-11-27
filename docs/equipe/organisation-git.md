@@ -36,8 +36,8 @@ Commits fréquents, petits, un sujet par commit.
 
 - Obligatoires : aucune fusion dans `develop` ou `main` sans PR.
 - Titre et description rédigés **en français**. Titre au format `type(portée): résumé`, sans point final, par exemple `feat(api): ajoute la réservation d'une place`.
-- Au moins deux relectures approuvées par deux autres membres (dont un relecteur de l'autre pôle si possible).
-- Description courte de ce qui change et comment le tester. Le [modèle de PR](../.github/pull_request_template.md) donne la trame.
+- Au moins deux relectures approuvées : le responsable du pôle de l'auteur et une personne du pôle Qualité.
+- Description courte de ce qui change et comment le tester. Le [modèle de PR](../../.github/pull_request_template.md) donne la trame.
 - Si la PR traite une issue, la citer (`Closes #n`, ou `Refs #n` si le travail n'est pas terminé). Une PR sans issue est acceptée.
 - Pas de conflit, application qui démarre, avant la fusion.
 - Fusion par le Chef de projet ou l'auteur après approbation, avec *Create a merge commit* (un squash mettrait le titre français dans l'historique des commits).
@@ -55,7 +55,7 @@ GitHub Actions vérifie chaque PR, ainsi que chaque push sur `main` et `develop`
 Un `backend/` ou `frontend/` est testé dès qu'il contient un `package.json`. Il doit alors respecter ces règles :
 
 - Gestionnaire de paquets : npm, avec `package-lock.json` versionné.
-- Version de Node : celle de [`.nvmrc`](../.nvmrc).
+- Version de Node : celle de [`.nvmrc`](../../.nvmrc).
 - Scripts lancés s'ils existent : `lint`, `format:check`, `typecheck`, `test`, `build`. Un avertissement signale l'absence de `lint` ou `test` (et de `build` côté front).
 - `test` doit se terminer seul (pas de mode watch).
 
@@ -68,7 +68,7 @@ Le suivi se fait dans le [tableau du projet](https://github.com/orgs/BlaBlaNoSQL
 1. Créer l'issue avec un des modèles (*Tâche ou fonctionnalité*, *Bug*). Elle est ajoutée au tableau si son auteur a le droit d'écriture sur le projet.
 2. S'assigner l'issue et la passer en cours sur le tableau.
 3. Ouvrir la PR avec `Closes #n` dans la description.
-4. À la fusion, l'issue est fermée, y compris quand la PR vise `develop` (workflow [`tickets.yml`](../.github/workflows/tickets.yml)). Pour une PR venant d'un fork, la fermer à la main tant que `develop` n'est pas la branche par défaut.
+4. À la fusion, l'issue est fermée, y compris quand la PR vise `develop` (workflow [`tickets.yml`](../../.github/workflows/tickets.yml)). Pour une PR venant d'un fork, la fermer à la main tant que `develop` n'est pas la branche par défaut.
 
 Les modèles d'issue et de PR ne sont proposés par GitHub qu'une fois présents sur la **branche par défaut**.
 

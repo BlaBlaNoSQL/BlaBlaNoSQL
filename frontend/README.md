@@ -22,6 +22,6 @@ frontend/
 ## Règles
 
 - Le JWT est transmis dans l'en-tête `Authorization: Bearer` par la couche `services/`.
-- Routes protégées selon le rôle (voir [../docs/jwt-securite.md](../docs/jwt-securite.md)).
+- Routes protégées selon le rôle (voir [../docs/securite/jwt.md](../docs/securite/jwt.md)).
 - Le suivi de position interroge l'API à intervalle régulier (ou WebSocket, à décider).
 - Responsables : Développeur React 1 et 2.

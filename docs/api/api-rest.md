@@ -1,7 +1,7 @@
 # API REST
 
 Endpoints prévus (préfixe `/api`). Format JSON. Authentification : `Authorization: Bearer <JWT>`.
-Rôles : `passager`, `conducteur`, `admin` (voir [jwt-securite.md](jwt-securite.md)).
+Rôles : `passager`, `conducteur`, `admin` (voir [securite/jwt.md](../securite/jwt.md)).
 Statut : tous à implémenter.
 
 ## Authentification

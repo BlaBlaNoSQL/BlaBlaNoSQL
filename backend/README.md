@@ -21,6 +21,6 @@ backend/
 ## Règles
 
 - Un controller n'accède jamais directement à une base : il passe par un service.
-- Les endpoints sont décrits dans [../docs/api-rest.md](../docs/api-rest.md).
+- Les endpoints sont décrits dans [../docs/api/api-rest.md](../docs/api/api-rest.md).
 - La configuration vient exclusivement de `.env` (voir `../.env.example`).
 - Responsables : Développeur API 1 et 2 (JWT : Responsable sécurité).

@@ -13,7 +13,7 @@ flowchart LR
     SIM[Simulateur GPS<br/>scripts/] -->|positions| API
 ```
 
-Principe : Cassandra porte les données volumineuses et les écritures continues ; la seconde base couvre le besoin que Cassandra traite mal (voir [bdd-secondaire.md](bdd-secondaire.md)).
+Principe : Cassandra porte les données volumineuses et les écritures continues ; la seconde base couvre le besoin que Cassandra traite mal (voir [bases/seconde-base.md](../bases/seconde-base.md)).
 
 ## Répartition des données
 
@@ -29,7 +29,7 @@ Principe : Cassandra porte les données volumineuses et les écritures continues
 - Réservations : lecture et écriture en `LOCAL_QUORUM` pour limiter le risque de surréservation (à compléter, éventuellement avec LWT `IF`).
 - Positions GPS : écriture en `ONE`, une position perdue est sans gravité.
 - Partitionnement par hachage de la clé de partition : répartition uniforme des données entre les nœuds, pas de point central.
-- Choix de la seconde base : position CAP à justifier dans [bdd-secondaire.md](bdd-secondaire.md).
+- Choix de la seconde base : position CAP à justifier dans [bases/seconde-base.md](../bases/seconde-base.md).
 
 ## Réplication et geo-partitioning
 
