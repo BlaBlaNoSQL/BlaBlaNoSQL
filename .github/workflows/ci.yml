@@ -1,0 +1,179 @@
+name: CI
+
+# Pas de filtre "paths" ici : un workflow filtré ne remonte aucun statut et
+# bloquerait la PR si "CI OK" est requis. Le tri se fait dans le job "changes".
+on:
+  pull_request:
+  # Revalide le résultat des fusions et remplit le cache npm réutilisé par les PR.
+  push:
+    branches: [main, develop, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Un nouveau push sur une PR annule le run précédent. Les runs de push vont au bout.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  changes:
+    name: Détection des changements
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      projects: ${{ steps.detect.outputs.projects }}
+      workflows: ${{ steps.detect.outputs.workflows }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Refuser les fichiers à ne jamais versionner
+        shell: bash
+        run: |
+          bad=$(git ls-files | grep -E '(^|/)node_modules/|(^|/)\.env($|\.)' | grep -vE '(^|/)\.env\.example$' || true)
+          if [[ -n $bad ]]; then
+            echo "::error::Fichiers .env ou node_modules versionnés. Les retirer avec git rm --cached, et changer les secrets exposés."
+            head -20 <<<"$bad"
+            exit 1
+          fi
+
+      - name: Choisir les jobs à lancer
+        id: detect
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          # Sur une PR on ne teste que ce qui a changé, sinon on teste tout.
+          all=true
+          files=""
+          if [[ $EVENT == pull_request ]]; then
+            files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[] | .filename, (.previous_filename // empty)')
+            all=false
+          fi
+          touched() { [[ $all == true ]] || grep -qE "$1" <<<"$files"; }
+
+          projects=()
+          for project in backend frontend; do
+            if [[ ! -f $project/package.json ]]; then
+              echo "::notice::$project : pas encore de package.json, job ignoré."
+            elif touched "^($project/|\.nvmrc$|\.github/workflows/ci\.yml$)"; then
+              projects+=("$project")
+            fi
+          done
+          echo "projects=$(jq -cn '$ARGS.positional' --args "${projects[@]}")" >> "$GITHUB_OUTPUT"
+
+          if touched '^\.github/workflows/'; then
+            echo "workflows=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  node:
+    name: ${{ matrix.project }}
+    needs: changes
+    if: needs.changes.outputs.projects != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      # L'échec du back ne doit pas masquer le résultat du front.
+      fail-fast: false
+      matrix:
+        project: ${{ fromJSON(needs.changes.outputs.projects) }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Vérifier la présence du lockfile
+        run: |
+          if [[ ! -f package-lock.json ]]; then
+            echo "::error::${{ matrix.project }}/package-lock.json absent. Lancer npm install et versionner le fichier."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+
+      - name: Installer les dépendances
+        id: install
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Signaler les scripts manquants
+        env:
+          PROJECT: ${{ matrix.project }}
+        run: |
+          node <<'EOF'
+          const { scripts = {} } = require("./package.json");
+          const project = process.env.PROJECT;
+          const expected = project === "frontend" ? ["lint", "test", "build"] : ["lint", "test"];
+          for (const name of expected.filter((n) => !scripts[n])) {
+            console.log(`::warning::${project} : script npm "${name}" absent, rien n'est vérifié pour cette étape.`);
+          }
+          EOF
+
+      # Chaque vérification tourne même si la précédente échoue : tous les
+      # problèmes remontent en un seul run.
+      - name: Lint
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run lint --if-present
+
+      - name: Format
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run format:check --if-present
+
+      - name: Types
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run typecheck --if-present
+
+      - name: Tests
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run test --if-present
+
+      - name: Build
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run build --if-present
+
+  actionlint:
+    name: Lint des workflows
+    needs: changes
+    if: needs.changes.outputs.workflows == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: docker://rhysd/actionlint:1.7.12@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
+        with:
+          args: -color
+
+  # Seul check de ce workflow à rendre obligatoire dans la protection de branche.
+  # Il aboutit toujours, y compris quand les autres jobs sont ignorés.
+  ci-ok:
+    name: CI OK
+    needs: [changes, node, actionlint]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Vérifier le résultat des jobs
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          jq -r 'to_entries[] | "\(.key) : \(.value.result)"' <<<"$NEEDS"
+          jq -e 'all(.[]; .result == "success" or .result == "skipped")' <<<"$NEEDS" > /dev/null

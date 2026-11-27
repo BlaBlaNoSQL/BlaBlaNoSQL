@@ -1,0 +1,52 @@
+name: Bug
+description: Un comportement qui ne correspond pas à ce qui est attendu
+labels: ["bug"]
+projects: ["BlaBlaNoSQL/1"]
+body:
+  - type: dropdown
+    id: domaine
+    attributes:
+      label: Domaine
+      options:
+        - back
+        - front
+        - bdd
+        - securite
+        - doc
+    validations:
+      required: true
+
+  - type: textarea
+    id: constat
+    attributes:
+      label: Ce qui se passe
+    validations:
+      required: true
+
+  - type: textarea
+    id: etapes
+    attributes:
+      label: Étapes pour reproduire
+      value: "1. "
+    validations:
+      required: true
+
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Comportement attendu
+    validations:
+      required: true
+
+  - type: input
+    id: environnement
+    attributes:
+      label: Environnement
+      placeholder: "Branche, OS, navigateur, version de Node"
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs ou messages d'erreur
+      description: Le dépôt est public. Retirer tout secret, mot de passe ou jeton avant de coller.
+      render: shell

@@ -1,0 +1,50 @@
+name: Tickets
+
+# GitHub n'interprète "Closes #n" que sur les PR vers la branche par défaut.
+# Ce workflow ferme les issues quand la PR est fusionnée dans la branche
+# d'intégration. Il ne fait rien si celle-ci devient la branche par défaut.
+on:
+  pull_request:
+    types: [closed]
+    branches: [develop, dev]
+
+permissions: {}
+
+jobs:
+  close:
+    name: Fermer les issues liées
+    # Les PR venant d'un fork n'ont qu'un jeton en lecture : elles sont ignorées.
+    if: >-
+      github.event.pull_request.merged &&
+      github.event.pull_request.base.ref != github.event.repository.default_branch &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      issues: write
+    steps:
+      - name: Fermer les issues citées
+        shell: bash
+        # La description est saisie par l'auteur : la passer par une variable.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          numbers=$(perl -0pe 's/<!--.*?-->//gs' <<<"$BODY" \
+            | grep -oiE '\b(close[sd]?|fix(es|ed)?|resolve[sd]?):? +#[0-9]+' \
+            | grep -oE '[0-9]+$' | sort -un || true)
+
+          for number in $numbers; do
+            if ! state=$(gh api "repos/$REPO/issues/$number" --jq 'if .pull_request then "pr" else .state end'); then
+              echo "::warning::#$number introuvable, rien à fermer."
+              continue
+            fi
+            if [[ $state == open ]]; then
+              gh api "repos/$REPO/issues/$number/comments" -f body="Fermée par #$PR, fusionnée dans $BASE." --silent
+              gh api -X PATCH "repos/$REPO/issues/$number" -f state=closed -f state_reason=completed --silent
+              echo "Issue #$number fermée."
+            fi
+          done

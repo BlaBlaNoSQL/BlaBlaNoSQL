@@ -5,7 +5,7 @@ Planning indicatif du guide : H1-H2 analyse, H3-H4 modélisation, H5-H8 backend,
 
 | # | Titre | Label | Rôle responsable |
 |---|---|---|---|
-| 1 | Initialiser le dépôt, branches main/dev, protections et PR obligatoires | doc | Chef de projet |
+| 1 | Initialiser le dépôt, branches main/develop, protections et PR obligatoires | doc | Chef de projet |
 | 2 | Planifier les jalons et répartir les tâches (tableau de suivi) | doc | Chef de projet |
 | 3 | Concevoir l'architecture globale et le schéma CAP / réplication / geo-partitioning | bdd | Architecte NoSQL |
 | 4 | Choisir et justifier la seconde base (grille 7 critères) | bdd | Responsable base secondaire |
