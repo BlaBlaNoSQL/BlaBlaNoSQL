@@ -4,9 +4,9 @@
 
 | Branche | Rôle | Règle |
 |---|---|---|
-| `main` | Version stable livrable | Protégée, jamais de commit direct, fusion depuis `dev` uniquement |
-| `dev` | Intégration | Protégée, fusion par PR depuis les `feature/*` |
-| `feature/*` | Une branche par fonctionnalité | Créée depuis `dev`, supprimée après fusion |
+| `main` | Version stable livrable | Protégée, jamais de commit direct, fusion depuis `develop` uniquement |
+| `develop` | Intégration | Protégée, fusion par PR depuis les `feature/*` |
+| `feature/*` | Une branche par fonctionnalité | Créée depuis `develop`, supprimée après fusion |
 
 Nommage : `feature/<domaine>-<sujet>`, par exemple `feature/api-reservations`, `feature/front-recherche`, `feature/bdd-schema-cassandra`.
 
@@ -28,7 +28,7 @@ Commits fréquents, petits, un sujet par commit.
 
 ## Pull requests
 
-- Obligatoires : aucune fusion dans `dev` ou `main` sans PR.
+- Obligatoires : aucune fusion dans `develop` ou `main` sans PR.
 - Au moins une relecture approuvée par un autre membre (relecteur de l'autre pôle si possible).
 - PR liée à une issue (`Closes #n`), description courte de ce qui change et comment le tester.
 - Pas de conflit, application qui démarre, avant la fusion.
@@ -38,10 +38,10 @@ Commits fréquents, petits, un sujet par commit.
 ## Au quotidien
 
 ```bash
-git switch dev && git pull
+git switch develop && git pull
 git switch -c feature/<domaine>-<sujet>
 # ... travail, commits ...
-git push -u origin feature/<domaine>-<sujet>   # puis ouvrir la PR vers dev
+git push -u origin feature/<domaine>-<sujet>   # puis ouvrir la PR vers develop
 ```
 
 Issues : voir [issues-a-creer.md](issues-a-creer.md). Une issue = un responsable.

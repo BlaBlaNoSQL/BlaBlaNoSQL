@@ -231,7 +231,7 @@ Activer le format-on-save dans l'éditeur.
 
 Les règles complètes sont dans [docs/organisation-git.md](docs/organisation-git.md). L'essentiel :
 
-- `main` et `dev` protégées, jamais de commit direct. Une branche `feature/<domaine>-<sujet>` par issue, depuis `dev`.
+- `main` et `develop` protégées, jamais de commit direct. Une branche `feature/<domaine>-<sujet>` par issue, depuis `develop`.
 - Commits `type(portée): résumé à l'impératif` (`feat`, `fix`, `docs`, `refactor`, `test`, `chore`), petits et
   fréquents, un sujet par commit.
 - **Une intention par PR** : ne pas mélanger une fonctionnalité et un refactor sans rapport.

@@ -32,10 +32,10 @@ issue), puis lancer les bases, le back et le front selon le [README](README.md#d
 1. **Prendre une issue** qui vous est attribuée (une issue = un responsable). Pas d'issue ? En demander une au Chef de
    projet avant de coder.
 2. **Lire** [AGENTS.md](AGENTS.md) et la doc de `docs/` liée au sujet (contrat d'API, tables, rôles).
-3. **Créer la branche** depuis `dev` à jour :
+3. **Créer la branche** depuis `develop` à jour :
 
    ```bash
-   git switch dev && git pull
+   git switch develop && git pull
    ```
 
    ```bash
@@ -46,7 +46,7 @@ issue), puis lancer les bases, le back et le front selon le [README](README.md#d
    [docs/organisation-git.md](docs/organisation-git.md)).
 5. **Tester** : tests back, essai réel de la route ou de l'écran.
 6. **Cocher la [DEFINITION_OF_DONE.md](DEFINITION_OF_DONE.md)**.
-7. **Pousser et ouvrir la PR vers `dev`** en suivant le format défini par la personne responsable des PR.
+7. **Pousser et ouvrir la PR vers `develop`** en suivant le format défini par la personne responsable des PR.
 8. **Traiter les retours de relecture**, puis fusion après approbation.
 
 ## 4. Travailler avec un agent IA

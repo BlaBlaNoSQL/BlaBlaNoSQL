@@ -64,7 +64,7 @@ Dans chaque dossier touché (`backend/`, `frontend/`), quand les scripts existen
 
 ## 8. Livraison
 
-- [ ] La branche `feature/<domaine>-<sujet>` part de `dev` à jour, sans conflit.
+- [ ] La branche `feature/<domaine>-<sujet>` part de `develop` à jour, sans conflit.
 - [ ] Les commits suivent `type(portée): résumé` et ne contiennent aucun fichier interdit
       (`.env`, `node_modules/`, builds, couverture).
 - [ ] La PR suit le format défini par la personne responsable des PR et est liée à son issue.
