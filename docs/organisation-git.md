@@ -29,7 +29,7 @@ Commits fréquents, petits, un sujet par commit.
 ## Pull requests
 
 - Obligatoires : aucune fusion dans `develop` ou `main` sans PR.
-- Au moins une relecture approuvée par un autre membre (relecteur de l'autre pôle si possible).
+- Au moins deux relectures approuvées par deux autres membres (dont un relecteur de l'autre pôle si possible).
 - Description courte de ce qui change et comment le tester. Le [modèle de PR](../.github/pull_request_template.md) donne la trame.
 - Si la PR traite une issue, la citer (`Closes #n`, ou `Refs #n` si le travail n'est pas terminé). Une PR sans issue est acceptée.
 - Pas de conflit, application qui démarre, avant la fusion.
@@ -75,7 +75,7 @@ Dans *Settings > General*, choisir `develop`. Les PR la visent alors d'office, l
 
 Dans *Settings > Rules > Rulesets*, pour `main` et la branche d'intégration :
 
-- Exiger une PR avec au moins une approbation.
+- Exiger une PR avec au moins deux approbations (*Required approvals* : 2).
 - Exiger les checks `CI OK` et `Règles PR` (ils n'apparaissent dans la liste qu'après un premier passage).
 - Interdire les push forcés et la suppression de la branche.
 
