@@ -1,5 +1,6 @@
 <!--
-Titre : type(portée): résumé à l'impératif, sans point final
+Titre et description en français. Les messages de commit sont en anglais.
+Titre : type(portée): résumé, sans point final
 Types : feat, fix, docs, refactor, test, chore
 Exemple : feat(api): ajoute la réservation d'une place
 Branche cible : develop. main ne reçoit que les PR de jalon.
